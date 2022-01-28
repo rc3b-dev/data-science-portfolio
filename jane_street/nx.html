@@ -1,0 +1,204 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 800px;
+            height: 800px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 800px;
+            height: 800px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#FFFF00", "id": "feature_0", "label": "feature_0", "shape": "dot", "size": 10, "title": "", "x": 6.583748215939145, "y": -303.98908519793423}, {"color": "#FFFF00", "id": "feature_38", "label": "feature_38", "shape": "dot", "size": 10, "title": "tag_6, tag_9, tag_12", "x": 6.049104844254165, "y": -271.2771740100199}, {"color": "#FF6347", "id": "feature_1", "label": "feature_1", "shape": "dot", "size": 10, "title": "tag_6, tag_7", "x": 2.115855596351179, "y": 299.6138931584781}, {"color": "#FF6347", "id": "feature_69", "label": "feature_69", "shape": "dot", "size": 10, "title": "tag_20", "x": 2.3044398161053232, "y": 335.8640945643817}, {"color": "#FF6347", "id": "feature_2", "label": "feature_2", "shape": "dot", "size": 10, "title": "tag_6, tag_7, tag_9", "x": 1.917794613210563, "y": 253.53959912003532}, {"color": "#FF6347", "id": "feature_71", "label": "feature_71", "shape": "dot", "size": 10, "title": "tag_9, tag_20", "x": 1.6955264531938397, "y": 214.1892080318013}, {"color": "#40E0D0", "id": "feature_3", "label": "feature_3", "shape": "dot", "size": 10, "title": "tag_6, tag_8", "x": -6.7606544051896025, "y": 183.3774608795369}, {"color": "#40E0D0", "id": "feature_4", "label": "feature_4", "shape": "dot", "size": 10, "title": "tag_6, tag_8, tag_9", "x": -6.7956784464147, "y": 219.56085473539895}, {"color": "#40E0D0", "id": "feature_5", "label": "feature_5", "shape": "dot", "size": 10, "title": "tag_6, tag_10", "x": -7.490912586570772, "y": 176.99988838365272}, {"color": "#EE82EE", "id": "feature_39", "label": "feature_39", "shape": "dot", "size": 10, "title": "tag_6, tag_13", "x": -5.826288840172058, "y": 139.97982818627017}, {"color": "#40E0D0", "id": "feature_6", "label": "feature_6", "shape": "dot", "size": 10, "title": "tag_6, tag_9, tag_10", "x": -7.838452051175971, "y": 184.81469394181013}, {"color": "#FF6347", "id": "feature_7", "label": "feature_7", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_11", "x": 6.677861374992743, "y": 382.6503142460912}, {"color": "#FF6347", "id": "feature_8", "label": "feature_8", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_9, tag_11", "x": 6.295856085081145, "y": 376.52991474535594}, {"color": "#FF6347", "id": "feature_12", "label": "feature_12", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_9, tag_11", "x": 5.4520339551361925, "y": 368.28481553389236}, {"color": "#FF6347", "id": "feature_9", "label": "feature_9", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_11", "x": 2.7237088491032093, "y": 393.4439787372828}, {"color": "#FF6347", "id": "feature_15", "label": "feature_15", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_11", "x": 3.2225135562584657, "y": 383.85787997705125}, {"color": "#FF6347", "id": "feature_53", "label": "feature_53", "shape": "dot", "size": 10, "title": "tag_20, tag_28", "x": 2.6553161333338693, "y": 478.70319032996866}, {"color": "#FF6347", "id": "feature_10", "label": "feature_10", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_9, tag_11", "x": 3.780346513806874, "y": 320.69519696320515}, {"color": "#FF6347", "id": "feature_16", "label": "feature_16", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_9, tag_11", "x": 3.4357561861906563, "y": 352.0797150863089}, {"color": "#FF6347", "id": "feature_11", "label": "feature_11", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_11", "x": 5.052541888004959, "y": 369.5335551872026}, {"color": "#FF6347", "id": "feature_13", "label": "feature_13", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_11", "x": 4.136871138615693, "y": 377.80110160399147}, {"color": "#FF6347", "id": "feature_14", "label": "feature_14", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_9, tag_11", "x": 4.393757848876491, "y": 349.1682549079397}, {"color": "#FFFF00", "id": "feature_17", "label": "feature_17", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_12", "x": 5.2373284856446025, "y": -206.1859498599997}, {"color": "#FFFF00", "id": "feature_18", "label": "feature_18", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_9, tag_12", "x": 5.522064452184833, "y": -182.85284772749816}, {"color": "#FFFF00", "id": "feature_21", "label": "feature_21", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_12", "x": 4.779153558170036, "y": -203.33823706359556}, {"color": "#FFFF00", "id": "feature_37", "label": "feature_37", "shape": "dot", "size": 10, "title": "tag_6, tag_12", "x": 5.758098610138172, "y": -252.09999192243464}, {"color": "#FFFF00", "id": "feature_19", "label": "feature_19", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_12", "x": 4.249582777263027, "y": -262.13885233640195}, {"color": "#FFFF00", "id": "feature_25", "label": "feature_25", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_12", "x": 4.255667192748262, "y": -236.79041670955982}, {"color": "#FFFF00", "id": "feature_20", "label": "feature_20", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_9, tag_12", "x": 3.446107733789543, "y": -136.72856512779046}, {"color": "#FFFF00", "id": "feature_26", "label": "feature_26", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_9, tag_12", "x": 3.688177240409789, "y": -150.21986346802117}, {"color": "#FFFF00", "id": "feature_97", "label": "feature_97", "shape": "dot", "size": 10, "title": "tag_0, tag_15, tag_23, tag_24", "x": 2.6398163073569503, "y": -90.10890010344482}, {"color": "#FFFF00", "id": "feature_23", "label": "feature_23", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_12", "x": 4.375903012494103, "y": -197.88384730417235}, {"color": "#FFFF00", "id": "feature_22", "label": "feature_22", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_9, tag_12", "x": 4.8813031126753215, "y": -244.98916103682987}, {"color": "#FFFF00", "id": "feature_24", "label": "feature_24", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_9, tag_12", "x": 4.0558454019918475, "y": -171.5996877144494}, {"color": "#EE82EE", "id": "feature_27", "label": "feature_27", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_13", "x": -5.232381651028154, "y": 119.14703124982172}, {"color": "#EE82EE", "id": "feature_28", "label": "feature_28", "shape": "dot", "size": 10, "title": "tag_4, tag_6, tag_9, tag_13", "x": -4.8596030067759575, "y": 104.54020412144983}, {"color": "#EE82EE", "id": "feature_32", "label": "feature_32", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_9, tag_13", "x": -4.446583672933207, "y": 88.07438999178214}, {"color": "#EE82EE", "id": "feature_29", "label": "feature_29", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_13", "x": -3.2372827683596213, "y": 48.01358739691534}, {"color": "#EE82EE", "id": "feature_35", "label": "feature_35", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_13", "x": -3.347132221436798, "y": 25.461806517634532}, {"color": "#EE82EE", "id": "feature_30", "label": "feature_30", "shape": "dot", "size": 10, "title": "tag_0, tag_6, tag_9, tag_13", "x": -2.7726864745088724, "y": -18.045976467614892}, {"color": "#EE82EE", "id": "feature_36", "label": "feature_36", "shape": "dot", "size": 10, "title": "tag_1, tag_6, tag_9, tag_13", "x": -3.003093586298906, "y": -1.471999100080957}, {"color": "#EE82EE", "id": "feature_73", "label": "feature_73", "shape": "dot", "size": 10, "title": "tag_0, tag_15, tag_23, tag_27", "x": -2.165468986000814, "y": -83.80711892445541}, {"color": "#EE82EE", "id": "feature_31", "label": "feature_31", "shape": "dot", "size": 10, "title": "tag_3, tag_6, tag_13", "x": -4.084960620716621, "y": 71.69692636879174}, {"color": "#EE82EE", "id": "feature_33", "label": "feature_33", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_13", "x": -3.7604154176274642, "y": 43.08206795007539}, {"color": "#EE82EE", "id": "feature_34", "label": "feature_34", "shape": "dot", "size": 10, "title": "tag_2, tag_6, tag_9, tag_13", "x": -4.048649862829719, "y": 17.458858535929977}, {"color": "#EE82EE", "id": "feature_40", "label": "feature_40", "shape": "dot", "size": 10, "title": "tag_6, tag_9, tag_13", "x": -6.123937818046697, "y": 121.01041917736207}, {"color": "#CA7D29", "id": "feature_41", "label": "feature_41", "shape": "dot", "size": 10, "title": "tag_14", "x": -0.42722301683863684, "y": -661.5055125180436}, {"color": "#00FF00", "id": "feature_45", "label": "feature_45", "shape": "dot", "size": 10, "title": "tag_17, tag_18", "x": -1.1656964841963298, "y": -557.8699552047094}, {"color": "#FF6347", "id": "feature_42", "label": "feature_42", "shape": "dot", "size": 10, "title": "tag_14", "x": 2.4367597170754713, "y": 588.4491121357082}, {"color": "#FF6347", "id": "feature_126", "label": "feature_126", "shape": "dot", "size": 10, "title": "tag_2, tag_28", "x": 2.3167267758997983, "y": 535.7776174539786}, {"color": "#FF6347", "id": "feature_43", "label": "feature_43", "shape": "dot", "size": 10, "title": "tag_14", "x": 2.903842070988167, "y": 619.2849329035444}, {"color": "#FF6347", "id": "feature_47", "label": "feature_47", "shape": "dot", "size": 10, "title": "tag_19", "x": 2.4757966322287484, "y": 669.3713007010881}, {"color": "#00FF00", "id": "feature_44", "label": "feature_44", "shape": "dot", "size": 10, "title": "tag_15, tag_18", "x": -0.5700372839210112, "y": -609.3819651150735}, {"color": "#00FF00", "id": "feature_114", "label": "feature_114", "shape": "dot", "size": 10, "title": "tag_4, tag_17, tag_23, tag_26", "x": -1.9222186913548298, "y": -497.0656306890696}, {"color": "#40E0D0", "id": "feature_46", "label": "feature_46", "shape": "dot", "size": 10, "title": "tag_17, tag_19", "x": 2.4340969988943497, "y": 788.2753494123318}, {"color": "#40E0D0", "id": "feature_50", "label": "feature_50", "shape": "dot", "size": 10, "title": "tag_17, tag_19", "x": 2.4508946146690698, "y": 840.4193778149944}, {"color": "#40E0D0", "id": "feature_48", "label": "feature_48", "shape": "dot", "size": 10, "title": "tag_19", "x": 2.612882916381252, "y": 734.4411964349472}, {"color": "#40E0D0", "id": "feature_49", "label": "feature_49", "shape": "dot", "size": 10, "title": "tag_15, tag_19", "x": 3.0173137747871595, "y": 752.8264867776325}, {"color": "#40E0D0", "id": "feature_51", "label": "feature_51", "shape": "dot", "size": 10, "title": "tag_19", "x": 2.5208242648541757, "y": 909.3039471606204}, {"color": "#40E0D0", "id": "feature_52", "label": "feature_52", "shape": "dot", "size": 10, "title": "tag_19", "x": 2.625270430582601, "y": 1000.0}, {"color": "#FF6347", "id": "feature_122", "label": "feature_122", "shape": "dot", "size": 10, "title": "tag_0, tag_28", "x": 2.4798670883907485, "y": 504.74836617210485}, {"color": "#CA7D29", "id": "feature_54", "label": "feature_54", "shape": "dot", "size": 10, "title": "tag_16, tag_20, tag_28", "x": 3.7470875517072018, "y": 524.1658153340265}, {"color": "#CA7D29", "id": "feature_123", "label": "feature_123", "shape": "dot", "size": 10, "title": "tag_0, tag_16, tag_28", "x": 4.283580650109672, "y": 553.7260712352037}, {"color": "#40E0D0", "id": "feature_55", "label": "feature_55", "shape": "dot", "size": 10, "title": "tag_4, tag_21", "x": 1.0570460935771662, "y": 683.8738959848155}, {"color": "#40E0D0", "id": "feature_57", "label": "feature_57", "shape": "dot", "size": 10, "title": "tag_3, tag_21", "x": 1.1752035755673313, "y": 646.8134806971923}, {"color": "#40E0D0", "id": "feature_56", "label": "feature_56", "shape": "dot", "size": 10, "title": "tag_0, tag_21", "x": 0.2533221675309861, "y": 671.2522552633806}, {"color": "#40E0D0", "id": "feature_59", "label": "feature_59", "shape": "dot", "size": 10, "title": "tag_1, tag_21", "x": 0.6446639454292993, "y": 623.1581919958771}, {"color": "#40E0D0", "id": "feature_58", "label": "feature_58", "shape": "dot", "size": 10, "title": "tag_2, tag_21", "x": 1.1632989553410797, "y": 610.7038739992998}, {"color": "#40E0D0", "id": "feature_60", "label": "feature_60", "shape": "dot", "size": 10, "title": "tag_12, tag_22", "x": -3.109736440419489, "y": -821.5477837642703}, {"color": "#40E0D0", "id": "feature_61", "label": "feature_61", "shape": "dot", "size": 10, "title": "tag_12, tag_22", "x": -3.1098151603765083, "y": -814.8370632391415}, {"color": "#40E0D0", "id": "feature_68", "label": "feature_68", "shape": "dot", "size": 10, "title": "tag_13, tag_22", "x": -3.1525198649650523, "y": -737.0371342229024}, {"color": "#40E0D0", "id": "feature_62", "label": "feature_62", "shape": "dot", "size": 10, "title": "tag_13, tag_22", "x": -4.714734357917973, "y": -698.603922028498}, {"color": "#40E0D0", "id": "feature_63", "label": "feature_63", "shape": "dot", "size": 10, "title": "tag_13, tag_22", "x": -4.762658202211137, "y": -701.9716163704466}, {"color": "#40E0D0", "id": "feature_66", "label": "feature_66", "shape": "dot", "size": 10, "title": "tag_12, tag_22", "x": -4.020734935694611, "y": -662.7626820605038}, {"color": "#40E0D0", "id": "feature_64", "label": "feature_64", "shape": "dot", "size": 10, "title": "tag_22", "x": -3.2981776424815585, "y": -656.6234552930315}, {"color": "#40E0D0", "id": "feature_67", "label": "feature_67", "shape": "dot", "size": 10, "title": "tag_13, tag_22", "x": -3.1560141033720743, "y": -732.8953699325649}, {"color": "#00FF00", "id": "feature_107", "label": "feature_107", "shape": "dot", "size": 10, "title": "tag_5, tag_17, tag_23, tag_24", "x": -2.6138697204301926, "y": -577.2461905192052}, {"color": "#40E0D0", "id": "feature_65", "label": "feature_65", "shape": "dot", "size": 10, "title": "tag_12, tag_22", "x": -4.075757853250346, "y": -657.8771986952314}, {"color": "#FF6347", "id": "feature_70", "label": "feature_70", "shape": "dot", "size": 10, "title": "tag_16, tag_20", "x": 1.1634964147341664, "y": 235.87325207868696}, {"color": "#FF6347", "id": "feature_109", "label": "feature_109", "shape": "dot", "size": 10, "title": "tag_0, tag_15, tag_23, tag_26", "x": 1.3873757185965343, "y": 120.13147922212285}, {"color": "#40E0D0", "id": "feature_72", "label": "feature_72", "shape": "dot", "size": 10, "title": "tag_4, tag_15, tag_23, tag_27", "x": -4.758591632689214, "y": -144.0706126308484}, {"color": "#40E0D0", "id": "feature_78", "label": "feature_78", "shape": "dot", "size": 10, "title": "tag_4, tag_17, tag_23, tag_27", "x": -5.378013048220259, "y": -158.14727115162992}, {"color": "#40E0D0", "id": "feature_74", "label": "feature_74", "shape": "dot", "size": 10, "title": "tag_3, tag_15, tag_23, tag_27", "x": -3.88077737197409, "y": -137.2812030183448}, {"color": "#EE82EE", "id": "feature_76", "label": "feature_76", "shape": "dot", "size": 10, "title": "tag_1, tag_15, tag_23, tag_27", "x": -2.482788008556177, "y": -95.09645933259911}, {"color": "#EE82EE", "id": "feature_85", "label": "feature_85", "shape": "dot", "size": 10, "title": "tag_0, tag_15, tag_23, tag_25", "x": -1.4744058942369205, "y": -125.9740433697783}, {"color": "#EE82EE", "id": "feature_79", "label": "feature_79", "shape": "dot", "size": 10, "title": "tag_0, tag_17, tag_23, tag_27", "x": -2.172299942349748, "y": -123.65747253803748}, {"color": "#40E0D0", "id": "feature_80", "label": "feature_80", "shape": "dot", "size": 10, "title": "tag_3, tag_17, tag_23, tag_27", "x": -4.217660928374775, "y": -186.8567785743466}, {"color": "#EE82EE", "id": "feature_75", "label": "feature_75", "shape": "dot", "size": 10, "title": "tag_2, tag_15, tag_23, tag_27", "x": -3.100557720423183, "y": -121.50977616443527}, {"color": "#EE82EE", "id": "feature_81", "label": "feature_81", "shape": "dot", "size": 10, "title": "tag_2, tag_17, tag_23, tag_27", "x": -3.3021872100466005, "y": -168.91084554710503}, {"color": "#40E0D0", "id": "feature_77", "label": "feature_77", "shape": "dot", "size": 10, "title": "tag_5, tag_15, tag_23, tag_27", "x": -6.95154128325036, "y": -179.24393388922599}, {"color": "#40E0D0", "id": "feature_83", "label": "feature_83", "shape": "dot", "size": 10, "title": "tag_5, tag_17, tag_23, tag_27", "x": -6.411987181274661, "y": -173.2776257611356}, {"color": "#EE82EE", "id": "feature_82", "label": "feature_82", "shape": "dot", "size": 10, "title": "tag_1, tag_17, tag_23, tag_27", "x": -2.448844694037666, "y": -153.7645753308558}, {"color": "#555555", "id": "feature_84", "label": "feature_84", "shape": "dot", "size": 10, "title": "tag_4, tag_15, tag_23, tag_25", "x": 0.947558546351035, "y": -62.50083171787145}, {"color": "#00FF00", "id": "feature_108", "label": "feature_108", "shape": "dot", "size": 10, "title": "tag_4, tag_15, tag_23, tag_26", "x": 0.7016753030847845, "y": -55.35026781123602}, {"color": "#EE82EE", "id": "feature_88", "label": "feature_88", "shape": "dot", "size": 10, "title": "tag_1, tag_15, tag_23, tag_25", "x": -1.0742541986638379, "y": -103.19137345986815}, {"color": "#EE82EE", "id": "feature_91", "label": "feature_91", "shape": "dot", "size": 10, "title": "tag_0, tag_17, tag_23, tag_25", "x": -1.4546219177341746, "y": -206.84718216828088}, {"color": "#555555", "id": "feature_86", "label": "feature_86", "shape": "dot", "size": 10, "title": "tag_3, tag_15, tag_23, tag_25", "x": 0.10574188588617875, "y": -33.53409867045471}, {"color": "#555555", "id": "feature_110", "label": "feature_110", "shape": "dot", "size": 10, "title": "tag_3, tag_15, tag_23, tag_26", "x": 0.4864108646973317, "y": -18.006476694074593}, {"color": "#555555", "id": "feature_87", "label": "feature_87", "shape": "dot", "size": 10, "title": "tag_2, tag_15, tag_23, tag_25", "x": -0.4649159085169464, "y": -66.4450274145288}, {"color": "#00FF00", "id": "feature_89", "label": "feature_89", "shape": "dot", "size": 10, "title": "tag_5, tag_15, tag_23, tag_25", "x": -2.185356131099737, "y": -644.4053136781743}, {"color": "#00FF00", "id": "feature_113", "label": "feature_113", "shape": "dot", "size": 10, "title": "tag_5, tag_15, tag_23, tag_26", "x": -2.096469975263493, "y": -638.8334699258743}, {"color": "#00FF00", "id": "feature_90", "label": "feature_90", "shape": "dot", "size": 10, "title": "tag_4, tag_17, tag_23, tag_25", "x": -1.7731839327988386, "y": -507.9145447021494}, {"color": "#EE82EE", "id": "feature_94", "label": "feature_94", "shape": "dot", "size": 10, "title": "tag_1, tag_17, tag_23, tag_25", "x": -1.5034344833154036, "y": -265.36725770064646}, {"color": "#555555", "id": "feature_92", "label": "feature_92", "shape": "dot", "size": 10, "title": "tag_3, tag_17, tag_23, tag_25", "x": -2.213239618320533, "y": -441.767642748538}, {"color": "#00FF00", "id": "feature_116", "label": "feature_116", "shape": "dot", "size": 10, "title": "tag_3, tag_17, tag_23, tag_26", "x": -1.8583030331369712, "y": -447.538094228316}, {"color": "#555555", "id": "feature_93", "label": "feature_93", "shape": "dot", "size": 10, "title": "tag_2, tag_17, tag_23, tag_25", "x": -1.5895333940774306, "y": -342.7841269745575}, {"color": "#00FF00", "id": "feature_117", "label": "feature_117", "shape": "dot", "size": 10, "title": "tag_2, tag_17, tag_23, tag_26", "x": -1.5392594301885898, "y": -403.22296013688396}, {"color": "#00FF00", "id": "feature_95", "label": "feature_95", "shape": "dot", "size": 10, "title": "tag_5, tag_17, tag_23, tag_25", "x": -2.4544524494560296, "y": -562.1160783312561}, {"color": "#00FF00", "id": "feature_119", "label": "feature_119", "shape": "dot", "size": 10, "title": "tag_5, tag_17, tag_23, tag_26", "x": -2.511812364741688, "y": -572.4426071312773}, {"color": "#00FF00", "id": "feature_96", "label": "feature_96", "shape": "dot", "size": 10, "title": "tag_4, tag_15, tag_23, tag_24", "x": 0.6601220950180503, "y": -79.14909224999536}, {"color": "#FFFF00", "id": "feature_100", "label": "feature_100", "shape": "dot", "size": 10, "title": "tag_1, tag_15, tag_23, tag_24", "x": 2.261163569083555, "y": -66.78469177261564}, {"color": "#00FF00", "id": "feature_98", "label": "feature_98", "shape": "dot", "size": 10, "title": "tag_3, tag_15, tag_23, tag_24", "x": 0.3666385989411141, "y": 11.295464035332552}, {"color": "#00FF00", "id": "feature_99", "label": "feature_99", "shape": "dot", "size": 10, "title": "tag_2, tag_15, tag_23, tag_24", "x": 1.6276794032435071, "y": -25.020321525506397}, {"color": "#555555", "id": "feature_111", "label": "feature_111", "shape": "dot", "size": 10, "title": "tag_2, tag_15, tag_23, tag_26", "x": 1.0782167554892568, "y": 5.326834513654958}, {"color": "#00FF00", "id": "feature_101", "label": "feature_101", "shape": "dot", "size": 10, "title": "tag_5, tag_15, tag_23, tag_24", "x": -1.9787147591553231, "y": -645.8940716803708}, {"color": "#00FF00", "id": "feature_102", "label": "feature_102", "shape": "dot", "size": 10, "title": "tag_4, tag_17, tag_23, tag_24", "x": -2.106306245290055, "y": -498.7902098367082}, {"color": "#FFFF00", "id": "feature_103", "label": "feature_103", "shape": "dot", "size": 10, "title": "tag_0, tag_17, tag_23, tag_24", "x": 0.032621208256203, "y": -489.8357101378311}, {"color": "#FFFF00", "id": "feature_106", "label": "feature_106", "shape": "dot", "size": 10, "title": "tag_1, tag_17, tag_23, tag_24", "x": -0.4106172842839311, "y": -461.334794107724}, {"color": "#00FF00", "id": "feature_104", "label": "feature_104", "shape": "dot", "size": 10, "title": "tag_3, tag_17, tag_23, tag_24", "x": -2.0581142185434884, "y": -424.62910539070765}, {"color": "#00FF00", "id": "feature_105", "label": "feature_105", "shape": "dot", "size": 10, "title": "tag_2, tag_17, tag_23, tag_24", "x": -1.0728253818909341, "y": -426.3028496774896}, {"color": "#FF6347", "id": "feature_112", "label": "feature_112", "shape": "dot", "size": 10, "title": "tag_1, tag_15, tag_23, tag_26", "x": 1.2522406179397052, "y": 77.73817964094688}, {"color": "#00FF00", "id": "feature_115", "label": "feature_115", "shape": "dot", "size": 10, "title": "tag_0, tag_17, tag_23, tag_26", "x": -0.4269461086120905, "y": -412.30021128492126}, {"color": "#00FF00", "id": "feature_118", "label": "feature_118", "shape": "dot", "size": 10, "title": "tag_1, tag_17, tag_23, tag_26", "x": -0.9525303289824815, "y": -394.06884059269987}, {"color": "#FF6347", "id": "feature_120", "label": "feature_120", "shape": "dot", "size": 10, "title": "tag_4, tag_28", "x": 1.9616271149812958, "y": 538.6241251101372}, {"color": "#FF6347", "id": "feature_124", "label": "feature_124", "shape": "dot", "size": 10, "title": "tag_3, tag_28", "x": 2.160847522966283, "y": 539.0715467087321}, {"color": "#CA7D29", "id": "feature_121", "label": "feature_121", "shape": "dot", "size": 10, "title": "tag_4, tag_16, tag_28", "x": 5.291421174257235, "y": 614.3122922323321}, {"color": "#CA7D29", "id": "feature_125", "label": "feature_125", "shape": "dot", "size": 10, "title": "tag_3, tag_16, tag_28", "x": 5.005812073732367, "y": 596.6587665412998}, {"color": "#FF6347", "id": "feature_128", "label": "feature_128", "shape": "dot", "size": 10, "title": "tag_1, tag_28", "x": 2.408375221797764, "y": 518.6418478728181}, {"color": "#CA7D29", "id": "feature_129", "label": "feature_129", "shape": "dot", "size": 10, "title": "tag_1, tag_16, tag_28", "x": 4.519149975895152, "y": 567.3919481174632}, {"color": "#CA7D29", "id": "feature_127", "label": "feature_127", "shape": "dot", "size": 10, "title": "tag_2, tag_16, tag_28", "x": 4.799189010734523, "y": 584.0912656062069}]);
+        edges = new vis.DataSet([{"from": "feature_0", "to": "feature_38", "weight": 0.35987881619417506}, {"from": "feature_1", "to": "feature_69", "weight": 0.21772803443668257}, {"from": "feature_1", "to": "feature_2", "weight": 0.26289165688415667}, {"from": "feature_2", "to": "feature_71", "weight": 0.2397786355329638}, {"from": "feature_3", "to": "feature_4", "weight": 0.21098099731787515}, {"from": "feature_3", "to": "feature_5", "weight": 0.39030545911068587}, {"from": "feature_3", "to": "feature_39", "weight": 0.5184813558582877}, {"from": "feature_5", "to": "feature_6", "weight": 0.21086983372636003}, {"from": "feature_7", "to": "feature_8", "weight": 0.2249085789430876}, {"from": "feature_8", "to": "feature_12", "weight": 0.4478089615925996}, {"from": "feature_9", "to": "feature_15", "weight": 0.26329279024551344}, {"from": "feature_9", "to": "feature_69", "weight": 0.33978617616473583}, {"from": "feature_9", "to": "feature_53", "weight": 0.40876809918098994}, {"from": "feature_10", "to": "feature_16", "weight": 0.2866668313235513}, {"from": "feature_11", "to": "feature_12", "weight": 0.2235494891743734}, {"from": "feature_11", "to": "feature_13", "weight": 0.4247316054020364}, {"from": "feature_13", "to": "feature_14", "weight": 0.24682337978948998}, {"from": "feature_13", "to": "feature_15", "weight": 0.40624820465208356}, {"from": "feature_15", "to": "feature_16", "weight": 0.2725546656957527}, {"from": "feature_17", "to": "feature_18", "weight": 0.21568959924378997}, {"from": "feature_17", "to": "feature_21", "weight": 0.2390840479513414}, {"from": "feature_17", "to": "feature_37", "weight": 0.3463989684203191}, {"from": "feature_19", "to": "feature_25", "weight": 0.1465627280324922}, {"from": "feature_20", "to": "feature_26", "weight": 0.15569043628232906}, {"from": "feature_20", "to": "feature_97", "weight": 0.451501640558362}, {"from": "feature_21", "to": "feature_23", "weight": 0.2090516696999884}, {"from": "feature_21", "to": "feature_22", "weight": 0.2353536046912563}, {"from": "feature_23", "to": "feature_24", "weight": 0.21504062244266728}, {"from": "feature_23", "to": "feature_25", "weight": 0.2188960032486394}, {"from": "feature_24", "to": "feature_26", "weight": 0.2262362031600369}, {"from": "feature_27", "to": "feature_28", "weight": 0.2230037308548239}, {"from": "feature_27", "to": "feature_39", "weight": 0.3373826724804354}, {"from": "feature_28", "to": "feature_32", "weight": 0.24229391448661622}, {"from": "feature_29", "to": "feature_35", "weight": 0.14835264843210752}, {"from": "feature_30", "to": "feature_36", "weight": 0.1582429676237912}, {"from": "feature_30", "to": "feature_73", "weight": 0.4373717379879483}, {"from": "feature_31", "to": "feature_32", "weight": 0.21463661785216528}, {"from": "feature_31", "to": "feature_33", "weight": 0.22492660936222333}, {"from": "feature_33", "to": "feature_34", "weight": 0.22733853360865228}, {"from": "feature_33", "to": "feature_35", "weight": 0.22759972476462179}, {"from": "feature_35", "to": "feature_36", "weight": 0.2257959808540722}, {"from": "feature_37", "to": "feature_38", "weight": 0.20214858464386914}, {"from": "feature_39", "to": "feature_40", "weight": 0.21428131312025112}, {"from": "feature_41", "to": "feature_45", "weight": 0.5796713008813137}, {"from": "feature_42", "to": "feature_126", "weight": 0.2828318071972337}, {"from": "feature_42", "to": "feature_43", "weight": 0.352758292337967}, {"from": "feature_42", "to": "feature_47", "weight": 0.39959723095954286}, {"from": "feature_44", "to": "feature_45", "weight": 0.4325157037367395}, {"from": "feature_45", "to": "feature_114", "weight": 0.4531694501494278}, {"from": "feature_46", "to": "feature_50", "weight": 0.29369985306014207}, {"from": "feature_46", "to": "feature_48", "weight": 0.30081326613604026}, {"from": "feature_47", "to": "feature_48", "weight": 0.3402812313938364}, {"from": "feature_48", "to": "feature_49", "weight": 0.24758803851076008}, {"from": "feature_50", "to": "feature_51", "weight": 0.39777945996907044}, {"from": "feature_51", "to": "feature_52", "weight": 0.5338488468443098}, {"from": "feature_53", "to": "feature_122", "weight": 0.17449355114307014}, {"from": "feature_53", "to": "feature_54", "weight": 0.5480051563648709}, {"from": "feature_54", "to": "feature_123", "weight": 0.3206992345818983}, {"from": "feature_55", "to": "feature_57", "weight": 0.21806540259283677}, {"from": "feature_56", "to": "feature_59", "weight": 0.3220661347684235}, {"from": "feature_57", "to": "feature_58", "weight": 0.2066026762191392}, {"from": "feature_58", "to": "feature_59", "weight": 0.2840313926001068}, {"from": "feature_58", "to": "feature_126", "weight": 0.6542310671498103}, {"from": "feature_60", "to": "feature_61", "weight": 0.041059471538542766}, {"from": "feature_61", "to": "feature_68", "weight": 0.4351232221036719}, {"from": "feature_62", "to": "feature_63", "weight": 0.03586249455280072}, {"from": "feature_62", "to": "feature_66", "weight": 0.43224941451387905}, {"from": "feature_64", "to": "feature_66", "weight": 0.38669268272862045}, {"from": "feature_64", "to": "feature_67", "weight": 0.3871143893710258}, {"from": "feature_64", "to": "feature_107", "weight": 0.5183087876503385}, {"from": "feature_65", "to": "feature_66", "weight": 0.04527738005253383}, {"from": "feature_67", "to": "feature_68", "weight": 0.025426542805836897}, {"from": "feature_70", "to": "feature_71", "weight": 0.33944312439453445}, {"from": "feature_71", "to": "feature_109", "weight": 0.4853067451784302}, {"from": "feature_72", "to": "feature_78", "weight": 0.3366072422552923}, {"from": "feature_72", "to": "feature_74", "weight": 0.42325358009160574}, {"from": "feature_73", "to": "feature_76", "weight": 0.1927104244331744}, {"from": "feature_73", "to": "feature_85", "weight": 0.34828367686939365}, {"from": "feature_73", "to": "feature_79", "weight": 0.35189761523741975}, {"from": "feature_74", "to": "feature_80", "weight": 0.35859568649812734}, {"from": "feature_74", "to": "feature_75", "weight": 0.37532156352281065}, {"from": "feature_75", "to": "feature_76", "weight": 0.33265654023814084}, {"from": "feature_75", "to": "feature_81", "weight": 0.3456605121227123}, {"from": "feature_77", "to": "feature_83", "weight": 0.3098261005441766}, {"from": "feature_78", "to": "feature_83", "weight": 0.5420782669763764}, {"from": "feature_79", "to": "feature_82", "weight": 0.2586166760065374}, {"from": "feature_84", "to": "feature_108", "weight": 0.15608980666459457}, {"from": "feature_85", "to": "feature_88", "weight": 0.2319156309064772}, {"from": "feature_85", "to": "feature_91", "weight": 0.3575733876824803}, {"from": "feature_86", "to": "feature_110", "weight": 0.19853595714250483}, {"from": "feature_86", "to": "feature_87", "weight": 0.31865599186135907}, {"from": "feature_87", "to": "feature_88", "weight": 0.3431335339340943}, {"from": "feature_89", "to": "feature_113", "weight": 0.06300505615036087}, {"from": "feature_90", "to": "feature_114", "weight": 0.11937448361832806}, {"from": "feature_91", "to": "feature_94", "weight": 0.2883554315984217}, {"from": "feature_92", "to": "feature_116", "weight": 0.1939446508519968}, {"from": "feature_93", "to": "feature_117", "weight": 0.29095108362714167}, {"from": "feature_93", "to": "feature_94", "weight": 0.37557669634723884}, {"from": "feature_95", "to": "feature_119", "weight": 0.06972372676741037}, {"from": "feature_95", "to": "feature_114", "weight": 0.4151924986056976}, {"from": "feature_96", "to": "feature_108", "weight": 0.14702868224470075}, {"from": "feature_97", "to": "feature_100", "weight": 0.23272907383754185}, {"from": "feature_98", "to": "feature_110", "weight": 0.2089180637989755}, {"from": "feature_99", "to": "feature_111", "weight": 0.28561545419172096}, {"from": "feature_99", "to": "feature_100", "weight": 0.3551804226934286}, {"from": "feature_101", "to": "feature_113", "weight": 0.08014303053434273}, {"from": "feature_102", "to": "feature_114", "weight": 0.1199688856333952}, {"from": "feature_103", "to": "feature_106", "weight": 0.2836686940394948}, {"from": "feature_104", "to": "feature_116", "weight": 0.19716259930085211}, {"from": "feature_105", "to": "feature_117", "weight": 0.2831679544887786}, {"from": "feature_105", "to": "feature_106", "weight": 0.3571359839942512}, {"from": "feature_107", "to": "feature_119", "weight": 0.06681771113396857}, {"from": "feature_108", "to": "feature_110", "weight": 0.28816925079398803}, {"from": "feature_109", "to": "feature_112", "weight": 0.2401463713872455}, {"from": "feature_110", "to": "feature_111", "weight": 0.2783570826038296}, {"from": "feature_111", "to": "feature_112", "weight": 0.36557703412339076}, {"from": "feature_113", "to": "feature_119", "weight": 0.41055330453269473}, {"from": "feature_114", "to": "feature_116", "weight": 0.2524420564913931}, {"from": "feature_115", "to": "feature_118", "weight": 0.3027763316298821}, {"from": "feature_116", "to": "feature_117", "weight": 0.2643718873207391}, {"from": "feature_117", "to": "feature_118", "weight": 0.36064390975504595}, {"from": "feature_120", "to": "feature_124", "weight": 0.12263324839099086}, {"from": "feature_121", "to": "feature_125", "weight": 0.1961128096667235}, {"from": "feature_122", "to": "feature_128", "weight": 0.09068005285933989}, {"from": "feature_123", "to": "feature_129", "weight": 0.15636164650429032}, {"from": "feature_124", "to": "feature_126", "weight": 0.0966798643599566}, {"from": "feature_125", "to": "feature_127", "weight": 0.1419574128524546}, {"from": "feature_126", "to": "feature_128", "weight": 0.10905038397346792}, {"from": "feature_127", "to": "feature_129", "weight": 0.18621515276527137}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
